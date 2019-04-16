@@ -1,33 +1,47 @@
 package com.example.utilities.model;
 
 import javax.persistence.*;
-import java.sql.Timestamp;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "payment")
 public class Payment {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+    private Long id;
 
-    Long customerId;
+    private BigDecimal amount;
 
-    double sum;
+    private LocalDateTime time;
 
-    Timestamp time;
+    private String status;
 
-    boolean status;
+    @ManyToOne
+    @JoinColumn(name="customer_id")
+    private Customer customer;
 
     public Payment() {
     }
 
-    public Payment(Long id, Long customerId, double sum, Timestamp time, boolean status) {
+    public Payment(Long id, BigDecimal amount, LocalDateTime time, String status, Customer customer) {
         this.id = id;
-        this.customerId = customerId;
-        this.sum = sum;
-        this.time = time;
+        this.amount = amount;
+        this.time = LocalDateTime.now();
         this.status = status;
+        this.customer = customer;
+    }
+
+    public Payment(BigDecimal amount, Customer customer) {
+        this.amount = amount;
+        this.time = LocalDateTime.now();
+        this.customer = customer;
+        if (amount.remainder(BigDecimal.valueOf(2)).equals(BigDecimal.ZERO)){
+            this.status = "OK";
+        }
+        else {
+            this.status = "ERROR";
+        }
     }
 
     public Long getId() {
@@ -38,35 +52,35 @@ public class Payment {
         this.id = id;
     }
 
-    public Long getCustomerId() {
-        return customerId;
+    public BigDecimal getAmout() {
+        return amount;
     }
 
-    public void setCustomerId(Long customerId) {
-        this.customerId = customerId;
+    public void setAmout(BigDecimal amout) {
+        this.amount = amout;
     }
 
-    public double getSum() {
-        return sum;
-    }
-
-    public void setSum(double sum) {
-        this.sum = sum;
-    }
-
-    public Timestamp getTime() {
+    public LocalDateTime getTime() {
         return time;
     }
 
-    public void setTime(Timestamp time) {
+    public void setTime(LocalDateTime time) {
         this.time = time;
     }
 
-    public boolean isStatus() {
+    public String getStatus() {
         return status;
     }
 
-    public void setStatus(boolean status) {
+    public void setStatus(String status) {
         this.status = status;
+    }
+
+    public Customer getCustomer() {
+        return customer;
+    }
+
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
     }
 }
